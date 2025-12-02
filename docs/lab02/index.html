@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKU CAMPS – Campus Guide</title>
+
+  <!-- CSS ภายในไฟล์เดียว -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Sarabun", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: #faf7f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 16px 20px 10px;
+      text-align: center;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .header-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #logoCanvas {
+      width: 200px;
+      height: 130px;
+      max-width: 60vw;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: #8b2d17;
+      letter-spacing: 0.04em;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    nav {
+      background: #8b2d17;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 20px auto 40px;
+      padding: 0 16px;
+    }
+
+    section {
+      margin-bottom: 32px;
+    }
+
+    section h2 {
+      margin-bottom: 12px;
+      color: #8b2d17;
+      font-size: 1.4rem;
+    }
+
+    /* Grid สำหรับสถานที่ */
+    .place-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .place-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 14px 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .place-card h3 {
+      font-size: 1.1rem;
+      color: #7a2612;
+    }
+
+    .place-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #ffe7d2;
+      color: #b8571e;
+      margin-bottom: 4px;
+    }
+
+    .place-meta {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .place-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Canvas map */
+    #mapCanvas {
+      width: 100%;
+      max-width: 480px;
+      height: 260px;
+      border-radius: 14px;
+      border: 1px solid #ddd;
+      background: #fff;
+      display: block;
+    }
+
+    .map-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .map-legend {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    /* ฟอร์มแนะนำสถานที่ */
+    form {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px 16px 18px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      max-width: 520px;
+    }
+
+    form label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: #444;
+    }
+
+    form input,
+    form textarea,
+    form select {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+
+    form input:focus,
+    form textarea:focus,
+    form select:focus {
+      outline: none;
+      border-color: #8b2d17;
+      box-shadow: 0 0 0 2px rgba(139,45,23,0.18);
+    }
+
+    button[type="submit"] {
+      background: #8b2d17;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #a33a20;
+    }
+
+    /* กล่องผู้จัดทำ */
+    #author {
+      margin-bottom: 28px;
+    }
+
+    .author-card {
+      background: #ffffff;
+      border-left: 4px solid #8b2d17;
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px 10px 20px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    /* Responsive nav */
+    @media (max-width: 640px) {
+      nav {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      main {
+        padding: 0 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <!-- Canvas โลโก้ KKU CAMPS -->
+      <canvas id="logoCanvas" width="400" height="260" aria-label="KKU CAMPS Logo"></canvas>
+      <h1>KKU CAMPS – Campus Guide</h1>
+      <p>เว็บแนะนำสถานที่เด่นภายในมหาวิทยาลัยขอนแก่น สำหรับนิสิตและผู้มาเยือน</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#places">สถานที่แนะนำ</a>
+    <a href="#contact">แนะนำสถานที่ใหม่</a>
+    <a href="#author">ผู้จัดทำ</a>
+  </nav>
+
+  <main>
+    <!-- สถานที่ภายในมหาวิทยาลัย -->
+    <section id="places">
+      <h2>สถานที่ไฮไลต์ใน KKU</h2>
+      <div class="place-grid">
+
+        <!-- ศูนย์อาหารคอมเพล็กซ์ -->
+        <article class="place-card">
+          <span class="place-badge">สายกิน</span>
+          <h3>ศูนย์อาหารคอมเพล็กซ์</h3>
+          <img src="complex.jpg" alt="ศูนย์อาหารคอมเพล็กซ์ มข." class="place-img" />
+          <p>แหล่งรวมอาหารราคานักศึกษา ทั้งข้าว แกง ก๋วยเตี๋ยว ขนม และร้านชานมยอดฮิต</p>
+          <p class="place-meta">โซน: ใกล้คณะวิศวกรรมศาสตร์ · คึกคักช่วงเที่ยง–เย็น</p>
+        </article>
+
+        <!-- บึงสีฐาน -->
+        <article class="place-card">
+          <span class="place-badge">พักผ่อน & วิ่ง</span>
+          <h3>บึงสีฐาน</h3>
+          <img src="buengseethan.jpg" alt="บึงสีฐาน มข." class="place-img" />
+          <p>จุดชมพระอาทิตย์ตกยอดฮิต บรรยากาศดี เหมาะกับการวิ่ง เดินเล่น หรือปั่นจักรยาน</p>
+          <p class="place-meta">โซน: รอบบึง · มีลู่วิ่งและเลนจักรยาน</p>
+        </article>
+
+        <!-- สำนักหอสมุด มข. -->
+        <article class="place-card">
+          <span class="place-badge">อ่านหนังสือ</span>
+          <h3>สำนักหอสมุด มข.</h3>
+          <img src="library.jpg" alt="สำนักหอสมุด มหาวิทยาลัยขอนแก่น" class="place-img" />
+          <p>ศูนย์กลางการเรียนรู้ของนิสิต มีทั้งห้องอ่านหนังสือ พื้นที่ทำโปรเจกต์ และโซน Co–Working</p>
+          <p class="place-meta">โซน: กลางมหาวิทยาลัย · เปิดบริการเช้า–ค่ำ</p>
+        </article>
+
+      </div>
+    </section>
+
+   
+
+    <!-- ฟอร์มแนะนำสถานที่ -->
+    <section id="contact">
+      <h2>ฟอร์มแนะนำสถานที่ใหม่</h2>
+      <form>
+        <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="95eb7122-3ddc-44a9-ad2a-995b93d79084">
+          
+        <label for="placeName">ชื่อสถานที่</label>
+        <input type="text" id="placeName" name="placeName" required />
+
+        <label for="detail">รายละเอียด</label>
+        <textarea id="detail" name="detail" rows="4" required></textarea>
+
+        <label for="imageUrl">URL ของภาพ</label>
+        <input type="text" id="imageUrl" name="imageUrl" />
+
+        <label for="sender">ชื่อผู้แนะนำ</label>
+        <input type="text" id="sender" name="sender" required />
+
+  <button type="submit">ส่งคำแนะนำ</button>
+</form>
+    </section>
+
+    <!-- กล่องผู้จัดทำ -->
+    <section id="author">
+      <h2>ผู้จัดทำ</h2>
+      <div class="author-card">
+        <p><strong>นายพิษณุวัชร์ หงส์วิไล</strong></p>
+        <p>รหัสนักศึกษา 663380609-1 · Sec 2</p>
+        <p>รายวิชา Mobile Web Application Development</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 KKU CAMPS – Mobile Web Application Development
+  </footer>
+
+  <!-- JavaScript ภายในไฟล์เดียว -->
+  <script>
+    // ====== วาดโลโก้ KKU CAMPS ด้วย Canvas + Animation ======
+    function drawRoundedRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    const logoCanvas = document.getElementById("logoCanvas");
+    const logoCtx = logoCanvas.getContext("2d");
+
+    let bounceOffset = 0;
+    let bounceDir = 1;
+
+    function drawLogoFrame() {
+      const w = logoCanvas.width;
+      const h = logoCanvas.height;
+
+      logoCtx.clearRect(0, 0, w, h);
+
+      // พื้นหลังโปร่งนิด ๆ
+      logoCtx.save();
+      drawRoundedRect(logoCtx, 40, 40, w - 80, h - 110, 60);
+      logoCtx.fillStyle = "#f8e5df";
+      logoCtx.fill();
+      logoCtx.restore();
+
+      // ข้อความ KKU แบบเส้นเหลี่ยม
+      logoCtx.save();
+      logoCtx.fillStyle = "#9b3b25";
+      logoCtx.lineWidth = 14;
+      logoCtx.lineCap = "square";
+
+      // ตัว K ซ้าย
+      logoCtx.beginPath();
+      logoCtx.moveTo(100, 70);
+      logoCtx.lineTo(100, 160);
+      logoCtx.moveTo(100, 110);
+      logoCtx.lineTo(140, 70);
+      logoCtx.moveTo(100, 115);
+      logoCtx.lineTo(140, 160);
+      logoCtx.stroke();
+
+      // ตัว K ขวา
+      logoCtx.beginPath();
+      logoCtx.moveTo(175, 70);
+      logoCtx.lineTo(175, 160);
+      logoCtx.moveTo(175, 110);
+      logoCtx.lineTo(215, 70);
+      logoCtx.moveTo(175, 115);
+      logoCtx.lineTo(215, 160);
+      logoCtx.stroke();
+
+      // ตัว U
+      logoCtx.beginPath();
+      logoCtx.moveTo(250, 70);
+      logoCtx.lineTo(250, 145);
+      logoCtx.quadraticCurveTo(250, 165, 270, 165);
+      logoCtx.lineTo(290, 165);
+      logoCtx.quadraticCurveTo(310, 165, 310, 145);
+      logoCtx.lineTo(310, 70);
+      logoCtx.stroke();
+
+      logoCtx.restore();
+
+      // Animation: ข้อความ CAMPS เด้งขึ้นลงเล็กน้อย
+      const baseY = 195;
+      bounceOffset += 0.5 * bounceDir;
+      if (bounceOffset > 8) bounceDir = -1;
+      if (bounceOffset < -2) bounceDir = 1;
+
+      const textY = baseY + bounceOffset;
+
+      // เงาชมพูอ่อน
+      logoCtx.save();
+      logoCtx.font = "bold 40px system-ui";
+      logoCtx.textAlign = "center";
+      logoCtx.fillStyle = "#f7a6d0";
+      logoCtx.fillText("CAMPS", w / 2 + 3, textY + 6);
+
+      // ตัวหนังสือส้ม
+      logoCtx.fillStyle = "#ff7a00";
+      logoCtx.strokeStyle = "#c34700";
+      logoCtx.lineWidth = 2;
+      logoCtx.fillText("CAMPS", w / 2, textY);
+      logoCtx.strokeText("CAMPS", w / 2, textY);
+      logoCtx.restore();
+
+      requestAnimationFrame(drawLogoFrame);
+    }
+    drawLogoFrame();
+
+    // ====== วาดแผนที่ Canvas แบบง่าย + จุดหมุน ======
+    const mapCanvas = document.getElementById("mapCanvas");
+    const mapCtx = mapCanvas.getContext("2d");
+    let t = 0;
+
+    function drawMapFrame() {
+      const w = mapCanvas.width;
+      const h = mapCanvas.height;
+
+      mapCtx.clearRect(0, 0, w, h);
+
+      // พื้นถนน/พื้นมหาวิทยาลัย
+      mapCtx.fillStyle = "#f3f3f3";
+      mapCtx.fillRect(0, 0, w, h);
+
+      // ถนนหลัก
+      mapCtx.strokeStyle = "#d0c7bf";
+      mapCtx.lineWidth = 10;
+      mapCtx.beginPath();
+      mapCtx.moveTo(40, 30);
+      mapCtx.lineTo(w - 40, 80);
+      mapCtx.lineTo(60, h - 40);
+      mapCtx.stroke();
+
+      // บึงสีฐาน (วงกลมฟ้า)
+      mapCtx.beginPath();
+      mapCtx.arc(130, 150, 40, 0, Math.PI * 2);
+      mapCtx.fillStyle = "#7ec8e3";
+      mapCtx.fill();
+
+      // โซนสนาม/พื้นที่เขียว
+      mapCtx.fillStyle = "#cfe8c8";
+      mapCtx.fillRect(w - 170, 140, 120, 60);
+
+      // กล่องอาคาร Library
+      mapCtx.fillStyle = "#ffffff";
+      mapCtx.strokeStyle = "#b0b0b0";
+      mapCtx.lineWidth = 2;
+      mapCtx.fillRect(w - 160, 40, 70, 40);
+      mapCtx.strokeRect(w - 160, 40, 70, 40);
+
+      // กล่องอาคาร Complex
+      mapCtx.fillStyle = "#ffffff";
+      mapCtx.fillRect(w - 130, 140, 70, 40);
+      mapCtx.strokeRect(w - 130, 140, 70, 40);
+
+      mapCtx.fillStyle = "#555";
+      mapCtx.font = "10px system-ui";
+      mapCtx.fillText("Library", w - 155, 35);
+      mapCtx.fillText("Complex", w - 125, 135);
+      mapCtx.fillText("บึงสีฐาน", 98, 150);
+
+      // Animation: จุดหมุดกระพริบสำหรับแต่ละสถานที่
+      const pulse = 0.4 + 0.3 * Math.sin(t / 10);
+
+      // Library pin (แดง)
+      mapCtx.beginPath();
+      mapCtx.fillStyle = "rgba(220,50,47," + (0.7 + pulse / 2) + ")";
+      mapCtx.arc(w - 125, 60, 6 + pulse * 4, 0, Math.PI * 2);
+      mapCtx.fill();
+
+      // Complex pin (ส้ม)
+      mapCtx.beginPath();
+      mapCtx.fillStyle = "rgba(255,140,0," + (0.7 + pulse / 2) + ")";
+      mapCtx.arc(w - 95, 160, 6 + pulse * 4, 0, Math.PI * 2);
+      mapCtx.fill();
+
+      // บึงสีฐาน pin (แดงบนฟ้า)
+      mapCtx.beginPath();
+      mapCtx.fillStyle = "rgba(220,50,47," + (0.7 + pulse / 2) + ")";
+      mapCtx.arc(150, 130, 6 + pulse * 4, 0, Math.PI * 2);
+      mapCtx.fill();
+
+      t += 1;
+      requestAnimationFrame(drawMapFrame);
+    }
+    drawMapFrame();
+  </script>
+</body>
+</html>
