@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,7 +25,7 @@
       padding: 16px 20px 10px;
       text-align: center;
       background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     .header-inner {
@@ -101,7 +102,7 @@
       background: #ffffff;
       border-radius: 12px;
       padding: 14px 14px 16px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -164,7 +165,7 @@
       background: #ffffff;
       border-radius: 12px;
       padding: 16px 16px 18px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       max-width: 520px;
     }
 
@@ -191,7 +192,7 @@
     form select:focus {
       outline: none;
       border-color: #8b2d17;
-      box-shadow: 0 0 0 2px rgba(139,45,23,0.18);
+      box-shadow: 0 0 0 2px rgba(139, 45, 23, 0.18);
     }
 
     button[type="submit"] {
@@ -219,7 +220,7 @@
       border-left: 4px solid #8b2d17;
       border-radius: 10px;
       padding: 12px 14px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
       font-size: 0.9rem;
       color: #444;
     }
@@ -301,29 +302,46 @@
       </div>
     </section>
 
-   
+
 
     <!-- ฟอร์มแนะนำสถานที่ -->
     <section id="contact">
       <h2>ฟอร์มแนะนำสถานที่ใหม่</h2>
-      <form>
-        <form action="https://api.web3forms.com/submit" method="POST">
-        <input type="hidden" name="access_key" value="95eb7122-3ddc-44a9-ad2a-995b93d79084">
-          
-        <label for="placeName">ชื่อสถานที่</label>
-        <input type="text" id="placeName" name="placeName" required />
+      <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
 
-        <label for="detail">รายละเอียด</label>
-        <textarea id="detail" name="detail" rows="4" required></textarea>
+  <!-- REQUIRED: Access Key -->
+  <input type="hidden" name="access_key" value="95eb7122-3ddc-44a9-ad2a-995b93d79084">
 
-        <label for="imageUrl">URL ของภาพ</label>
-        <input type="text" id="imageUrl" name="imageUrl" />
+  <label for="name">ชื่อผู้ส่ง</label>
+  <input 
+    type="text" 
+    id="name" 
+    name="name" 
+    placeholder="กรอกชื่อของคุณ เช่น พิษณุวัชร์" 
+    required
+  >
 
-        <label for="sender">ชื่อผู้แนะนำ</label>
-        <input type="text" id="sender" name="sender" required />
+  <label for="email">อีเมลติดต่อ</label>
+  <input 
+    type="email" 
+    id="email" 
+    name="email" 
+    placeholder="example@gmail.com" 
+    required
+  >
+
+  <label for="message">ข้อความแนะนำสถานที่</label>
+  <textarea 
+    id="message" 
+    name="message" 
+    rows="4" 
+    placeholder="อธิบายสถานที่ที่อยากแนะนำ เช่น บรรยากาศดี ราคาไม่แพง อยู่ใกล้คณะ..." 
+    required
+  ></textarea>
 
   <button type="submit">ส่งคำแนะนำ</button>
 </form>
+
     </section>
 
     <!-- กล่องผู้จัดทำ -->
@@ -521,4 +539,5 @@
     drawMapFrame();
   </script>
 </body>
+
 </html>
