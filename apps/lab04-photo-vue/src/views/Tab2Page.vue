@@ -1,4 +1,3 @@
-
 <template>
   <ion-page>
     <ion-header>
@@ -8,14 +7,14 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <!-- Large title (iOS style) -->
+      <!-- iOS large title -->
       <ion-header collapse="condense">
         <ion-toolbar>
           <ion-title size="large">Photo Gallery</ion-title>
         </ion-toolbar>
       </ion-header>
 
-      <!-- Student Info Card -->
+      <!-- Student Info -->
       <ion-card class="student-card">
         <ion-card-header>
           <ion-card-title>ผู้พัฒนาแอป</ion-card-title>
@@ -26,27 +25,34 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Empty state (ยังไม่ถ่ายรูป) -->
-      <div class="empty-state">
+      <!-- Empty State -->
+      <div v-if="photos.length === 0" class="empty-state">
         <ion-icon :icon="imagesOutline" />
-        <p>ยังไม่มีรูปภาพ<br />กดปุ่มกล้องเพื่อเริ่มถ่ายภาพ</p>
+        <p>
+          ยังไม่มีรูปภาพ<br />
+          กดปุ่มกล้องเพื่อเริ่มถ่ายภาพ
+        </p>
       </div>
 
-      <!-- Floating Action Button -->
+      <!-- Photo Grid -->
+      <ion-grid v-else>
+        <ion-row>
+          <ion-col
+            size="6"
+            v-for="photo in photos"
+            :key="photo.filepath"
+          >
+            <ion-img :src="photo.webviewPath" />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- FAB -->
       <ion-fab vertical="bottom" horizontal="center" slot="fixed">
         <ion-fab-button @click="takePhoto">
-          <ion-icon :icon="camera"></ion-icon>
+          <ion-icon :icon="camera" />
         </ion-fab-button>
       </ion-fab>
-
-      <ion-grid>
-      <ion-row>
-      <ion-col size="6" v-for="photo in photos" :key="photo.filepath">
-      <ion-img :src="photo.webviewPath"></ion-img>
-      </ion-col>
-  </ion-row>
-</ion-grid>
-
     </ion-content>
   </ion-page>
 </template>
@@ -61,28 +67,26 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonGrid,
   IonRow,
   IonCol,
-  IonImg
+  IonImg,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent
 } from '@ionic/vue'
 
 import { camera, imagesOutline } from 'ionicons/icons'
 import { onMounted } from 'vue'
 import { usePhotoGallery } from '@/composables/usePhotoGallery'
 
-// เรียก composable แค่ครั้งเดียว
 const { photos, takePhoto, loadSaved } = usePhotoGallery()
 
 onMounted(() => {
   loadSaved()
 })
 </script>
-
 
 <style scoped>
 .student-card {
