@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">lab07-authen</string>
+    <string name="title_activity_main">lab07-authen</string>
+    <string name="package_name">com.lab7</string>
+    <string name="custom_url_scheme">com.lab7</string>
+</resources>
